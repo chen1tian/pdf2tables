@@ -87,7 +87,13 @@ class PageTable:
 
 image_tables模块是使用tesseract抽取图片表格数据的模块，它会查找图片中的表格范围，截取表格为新图片，然后按单元格切分表格，最后将单元格图片中的文字识别出来。识别后的文字会按单元格的顺序存放。
 
-使用方法直接看源码吧，都有注释
+主要方法：
+
+- def detect_table(img): 检查表格，返回网格图和网格坐标图
+- find_table(img, mask_img, save=False, save_dir=None): 查找表格，根据网格图找到表格轮廓，如果save=True，那么会将找到的表格保存为图片
+- find_joint_points(joint): 查找网格坐标点，根据返回的结果可以产生数据数组
+- class cutImage(object): 截取单元格的类
+  - get_text(self): 截取单元格为小图片并将其中的文本
 
 ## aliyun_tables模块
 
