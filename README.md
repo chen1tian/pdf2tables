@@ -79,7 +79,7 @@ class PageTable:
 
 例如：
 
-![图片](marked-image-debug.png)
+![图片](https://raw.githubusercontent.com/chen1tian/pdf2tables/master/marked-image-debug.png)
 
 图片中绿色的边框为单元格，红色圆点为数据数组的标识，如果单元格有未被识别的情况，表现为某些单元格没有绿色边框包围，那么需要调整`pytesseract_areaRange`参数，让所有的表格都能够被绿色边框包围。
 
