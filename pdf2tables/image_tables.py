@@ -238,7 +238,7 @@ def find_joint_points(joint):
     '''
     ys, xs = np.where(joint > 0)
 
-    if len(xs) == 0:
+    if len(xs) == 0 or len(yx) == 0:
         return None
 
     mylisty = []  # 纵坐标
