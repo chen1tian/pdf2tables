@@ -75,7 +75,7 @@ def merge_tables(all_tables, page_number, other_tables):
             merge_table(all_tables, page_number, data, t.text)
 
 
-def extract_imgbase(pdf: pdfplumber.PDF, page_number: int, flavor: str, lang: str, **imgOcrSettings):
+def extract_imgbase(pdf: pdfplumber.PDF, page_number: int, flavor: str, lang: str, filter=None, **imgOcrSettings):
     '''
     : 抽取基于图片的pdf
     '''
@@ -91,6 +91,12 @@ def extract_imgbase(pdf: pdfplumber.PDF, page_number: int, flavor: str, lang: st
 
     page_text = pytesseract.image_to_string(
         page_img_path, lang=lang, config='--psm 11 --dpi 300', nice=1)
+
+    if filter is not None:
+        needExtract = filter(page_text, page_number, page_img_path)
+        if needExtract == False:
+            print('不符合过滤条件，略过')
+            return None
 
     # 处理配置 根据ocr类型，删除无关的配置项
     img_ocr_type = imgOcrSettings.get(
@@ -123,7 +129,7 @@ def extract_imgbase(pdf: pdfplumber.PDF, page_number: int, flavor: str, lang: st
     return tables
 
 
-def extract(pdf_path: str, flavor='lattice', lang: str = 'eng', **imgOcrSettings):
+def extract(pdf_path: str, filter=None, flavor='lattice', lang: str = 'eng', **imgOcrSettings):
     '''
     : 抽取pdf中的表格数据
     '''
@@ -155,12 +161,19 @@ def extract(pdf_path: str, flavor='lattice', lang: str = 'eng', **imgOcrSettings
 
     for page_number in other_pages:
         other_tables = extract_imgbase(
-            pdf, page_number, flavor, lang, **imgOcrSettings)
-        merge_tables(tables, page_number, other_tables)
+            pdf, page_number, flavor, lang, filter, **imgOcrSettings)
+
+        if other_tables is not None:
+            merge_tables(tables, page_number, other_tables)
 
     pdf.close()
 
     return tables
+
+
+def test_filter(page_text, page_number, page_img_path):
+    text_arr = [t for t in page_text.split('\n',) if t]
+    return text_arr[0].upper() == 'Report of Sugar Export'.upper() and text_arr[1].upper() == 'JANUARY 2010'.upper()
 
 
 if __name__ == '__main__':
@@ -177,7 +190,7 @@ if __name__ == '__main__':
     }
 
     tables = extract(
-        'C:/Work/HxProjects/Wpbs/Crawler/pdf2tables/test_data/Jan-2010.pdf', lang='eng+tha', **imgOcrSettings)
+        'C:/Work/HxProjects/Wpbs/Crawler/pdf2tables/test_data/Jan-2010.pdf', lang='eng+tha', filter=test_filter, ** imgOcrSettings)
 
     for t in tables:
         print("page", t.page)
