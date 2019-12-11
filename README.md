@@ -1,5 +1,11 @@
 # Pdf表格抽取
 
+## 安装
+
+```bash
+pip install pdf2tables
+```
+
 ## 简介
 
 camelot是一个很棒的pdf表格数据抽取库，但遗憾的是它不能处理基于图片的pdf表格。pdf2tables是对camelot的一个补充，pdf中能够使用camelot抽取的表格，用camelot抽取，而camelot处理不了的图片，则使用ocr的方式识别处理。
