@@ -155,7 +155,10 @@ def detect_table(img):
     h_img = thresh_img.copy()
     v_img = thresh_img.copy()
     scale = 15
-    h_size = int(h_img.shape[1]/scale)
+    h_size = int(h_img.shape[1] / scale)
+
+    if h_size == 0:
+        return None, None
 
     h_structure = cv2.getStructuringElement(
         cv2.MORPH_RECT, (h_size, 1))  # 形态学因子
@@ -164,6 +167,8 @@ def detect_table(img):
     h_dilate_img = cv2.dilate(h_erode_img, h_structure, 1)
     # cv2.imshow("h_erode",h_dilate_img)
     v_size = int(v_img.shape[0] / scale)
+    if v_size == 0:
+        return None, None
 
     v_structure = cv2.getStructuringElement(
         cv2.MORPH_RECT, (1, v_size))  # 形态学因子
@@ -238,7 +243,7 @@ def find_joint_points(joint):
     '''
     ys, xs = np.where(joint > 0)
 
-    if len(xs) == 0 or len(yx) == 0:
+    if len(xs) == 0 or len(ys) == 0:
         return None
 
     mylisty = []  # 纵坐标
@@ -289,17 +294,20 @@ def extract_tables(img_path, **settings):
     '''
     抽取表格
     '''
+    tables = []
+
     # 读取图片
     img = cv2.imread(img_path)
 
     mask, joints = detect_table(img)
+    if mask is None or joints is None:
+        return []
 
     # 寻找表格并且保存为图片
     table_images = find_table(img, mask, save=True)
 
     # 对表格图片进行分割并使用ocr得到文本
     kernel = np.ones((4, 4), np.uint8)
-    tables = []
 
     # 循环表格抓取数据
     for tImg in table_images:
