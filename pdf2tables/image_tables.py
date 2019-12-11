@@ -65,6 +65,8 @@ class cutImage(object):
         mask, joint = detect_table(self.img)
         # 得到交叉点坐标
         pointArr = find_joint_points(joint)
+        if pointArr is None:
+            return None
 
         if self.img.shape[2] == 1:  # 灰度图
             img_gray = self.img
@@ -236,6 +238,9 @@ def find_joint_points(joint):
     '''
     ys, xs = np.where(joint > 0)
 
+    if len(xs) == 0:
+        return None
+
     mylisty = []  # 纵坐标
     mylistx = []  # 横坐标
 
@@ -303,7 +308,9 @@ def extract_tables(img_path, **settings):
         # 切图并识别成表格
         table_img = cv2.imread(table_path)
         data = cutImage(table_img, **settings).get_text()
-        tables.append(data)
+
+        if data is not None:
+            tables.append(data)
 
         # 删除临时文件
         os.remove(table_path)
@@ -314,7 +321,7 @@ def extract_tables(img_path, **settings):
 if __name__ == '__main__':
     img_path = 'C:/Work/HxProjects/Wpbs/Crawler/pdf2tables/test_data/Jan-2010-page-2-300.png'
 
-    isDebug = True
+    isDebug = False
     # 切图并识别成表格
     settings = {
         'pytesseract_kernel': np.ones((4, 4), np.uint8),
