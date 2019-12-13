@@ -105,8 +105,9 @@ class cutImage(object):
                     cv2.rectangle(
                         self.img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                # cv2.imshow('cut_img', roi)
-                # cv2.waitKey()
+                    cv2.imshow('roi_img', roi)
+                    # cv2.imwrite(f'roi/roi_{x}_{y}_{w}_{h}.png', roi)
+                    cv2.waitKey()
 
                 # 根据坐标，将表格值写入数组中
                 for row in pointArr:
@@ -337,7 +338,8 @@ if __name__ == '__main__':
         'pytesseract_iterations': 1,
         'pytesseract_areaRange': [10000, 100000],
         'pytesseract_isDebug': isDebug,
-        'pytesseract_border': 10
+        'pytesseract_border': 10,
+        'pytesseract_lang': 'tha+eng'
     }
 
     tables = extract_tables(
