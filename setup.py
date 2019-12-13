@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='pdf2tables',
-    version='0.3.4',
+    version='0.3.5',
     packages=find_packages(where='.', exclude=(), include=('*',)),
     url='https://github.com/chen1tian/pdf2tables',
     license='BSD 2-Clause License',
