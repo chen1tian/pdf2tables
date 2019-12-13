@@ -107,6 +107,8 @@ class AliyunOcrTableParse:
                         if type(col) is dict:
                             if col['text'] is not None:
                                 values.append(col['text'][0])
+                            else:
+                                values.append('')
                     if len(values) > 0:
                         data.append(values)
                 datas.append(data)
